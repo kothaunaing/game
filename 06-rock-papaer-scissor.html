@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="06-style.css">
+  <style>
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <button onclick="
+    userMove = 'rock';
+    decideResult (userMove);
+    ">Rock</button>
+
+    <button onclick="
+  userMove = 'paper';
+  decideResult (userMove);
+  ">Paper</button>
+
+    <button onclick="
+  userMove = 'scissors';
+  decideResult (userMove);
+  ">Scissors</button>
+
+    <button onclick="
+    score = {
+        losses: 0,
+        wins: 0,
+        ties: 0
+      };
+      localStorage.removeItem('score');
+    resetScore();
+">Reset Scores</button>
+
+    <p>Result</p>
+
+    <!-- 
+    <div id="result">
+      Click a button above.
+    </div>
+    <p id="count"></p>
+  </div>
+-->
+    <div class="result">
+      <div class="row1">
+        <div>You</div>
+        <div>Computer</div>
+        <div>Result</div>
+      </div>
+      <div class="row2">
+        <div id="userMove">Click</div>
+        <div id="computerMove">a</div>
+        <div id="result">button above</div>
+      </div>
+    </div>
+    <div class="row3">
+      <div>Loses: <span id="loseCount"></span></div>
+      <div>Wins: <span id="winCount"></span></div>
+      <div>Ties: <span id="tieCount"></span></div>
+    </div>
+    <div id="message"></div>
+
+    <script>
+      let userMove = '';
+
+      let score = JSON.parse(localStorage.getItem('score'))
+        || {
+        losses: 0,
+        wins: 0,
+        ties: 0
+      };
+      ;
+
+      showScore(score);
+
+      function showScore(score) {
+        document.querySelector("#loseCount").innerHTML = `${score.losses}`;
+        document.querySelector("#winCount").innerHTML = `${score.wins}`;
+        document.querySelector("#tieCount").innerHTML = `${score.ties}`;
+      }
+
+      function decideResult(userMove) {
+        let computerMove = '';
+        let result = '';
+
+        let randomNumber = Math.random();
+
+        if (randomNumber >= 0 && randomNumber < 1 / 3) {
+          computerMove = 'rock';
+        }
+        else if (randomNumber >= 1 / 3 && randomNumber < 2 / 3) {
+          computerMove = 'paper';
+        }
+        else if (randomNumber >= 2 / 3 && randomNumber < 1) {
+          computerMove = 'scissors';
+        }
+
+        if (userMove === computerMove) {
+          result = 'Tie';
+        }
+
+        else if (userMove === 'rock') {
+          if (computerMove === 'paper') {
+            result = 'Lose';
+          }
+          else if (computerMove === 'scissors') {
+            result = 'Win';
+          }
+        }
+
+        else if (userMove === 'paper') {
+          if (computerMove === 'rock') {
+            result = 'Win';
+          }
+          else if (computerMove === 'scissors') {
+            result = 'Lose';
+          }
+        }
+
+        else if (userMove === 'scissors') {
+          if (computerMove === 'rock') {
+            result = 'Lose';
+          }
+          else if (computerMove === 'paper') {
+            result = 'Win';
+          }
+        }
+
+        if (result === 'Win') score.wins++;
+        else if (result === 'Lose') score.losses++;
+        else score.ties++;
+
+        let scoreString = JSON.stringify(score);
+        localStorage.setItem('score', scoreString);
+
+        console.log(randomNumber);
+        console.log(`You picked ${userMove} and computer picked ${computerMove}. ${result}.`);
+        document.querySelector("#userMove").innerHTML = `${userMove}`;
+        document.querySelector("#computerMove").innerHTML = `${computerMove}`;
+        document.querySelector("#result").innerHTML = `${result}`;
+
+        showScore(score);
+      }
+
+      function resetScore() {
+        document.getElementById("message").innerHTML = 'Scores were reset.';
+        showScore(score);
+
+      }
+    </script>
+</body>
+
+</html>
